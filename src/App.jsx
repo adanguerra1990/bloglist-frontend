@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import CreateBlogForm from './components/CreateBlogForm'
+
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,6 +14,8 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [notificationType, setNotificationType] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -23,6 +28,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
+      blogService.setToken(user.token)
     }
   }, []);
 
@@ -41,7 +47,12 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exeption) {
-      console.error('loggin filed', exeption)
+      setNotificationMessage('Wrong username or password')
+      setNotificationType('error')
+      setTimeout(() => {
+        setNotificationMessage(null)
+        setNotificationType(null)
+      }, 5000);
     }
   }
 
@@ -57,11 +68,24 @@ const App = () => {
     blogService
       .create(newBlog)
       .then(returnedBlog => {
-        console.log('returnedBlog', returnedBlog)
-        setBlogs(blogs.concat(returnedBlog))        
+        setBlogs(blogs.concat(returnedBlog))
         setTitle('')
         setAuthor('')
         setUrl('')
+        setNotificationMessage(`New blog added: ${title} by ${author}`)
+        setNotificationType('success')
+        setTimeout(() => {
+          setNotificationMessage(null)
+          setNotificationType(null)
+        }, 5000);
+      })
+      .catch(error => {
+        setNotificationMessage('Error creating the blog')
+        setNotificationType('error')
+        setTimeout(() => {
+          setNotificationMessage(null)
+          setNotificationType(null)
+        }, 5000);
       })
 
   }
@@ -75,6 +99,7 @@ const App = () => {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification message={notificationMessage} type={notificationType} />
         <form onSubmit={handdleLogin}>
           <div>
             username
@@ -104,43 +129,21 @@ const App = () => {
 
   return (
     <div>
-      <h2>{user.name} logged in</h2>
+      <h2>Blogs</h2>
+      <Notification message={notificationMessage} type={notificationType} />
+      <h3>{user.name} logged in</h3>
       <button onClick={handleLogout}>Logout</button>
-      <div>
-        <h2>Ceeate New</h2>
-        <form onSubmit={addBlog}>
-          <div>
-            <label>Title</label>
-            <input
-              type='text'
-              name='title'
-              value={title}
-              onChange={({target}) => setTitle(target.value)}
-            />
-          </div>
-          <div>
-            <label>Author</label>
-            <input
-              type='text'
-              name='author'
-              value={author}
-              onChange={({target}) => setAuthor(target.value)}
-            />
-          </div>
-          <div>
-            <label>Url</label>
-            <input
-              type='text'
-              value={url}
-              name='url'
-              onChange={({target}) => setUrl(target.value)}
-            />
-          </div>
-          <button type='submit'>Create</button>
-        </form>
-      </div>
 
-      <h2>blogs</h2>
+      <CreateBlogForm 
+        title={title}
+        setTitle={setTitle}
+        author={author}
+        setAuthor={setAuthor}
+        url={url}
+        setUrl={setUrl}
+        handleSubmit={addBlog}
+      />     
+
       <div>
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
