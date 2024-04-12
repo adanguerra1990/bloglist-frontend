@@ -5,7 +5,6 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import CreateBlogForm from './components/CreateBlogForm'
 
-
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [title, setTitle] = useState('')
@@ -91,8 +90,16 @@ const App = () => {
   }
 
   const handleLogout = () => {
+    setNotificationMessage(`${user.name} has been logged out successfully.`)
+    setNotificationType('success')
+
     window.localStorage.removeItem('loggedBlogappUser');
-    setUser(null);
+    setUser(null)
+
+    setTimeout(() => {
+      setNotificationMessage(null)
+      setNotificationType(null) 
+   }, 5000)
   }
 
   if (user === null) {
