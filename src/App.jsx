@@ -3,14 +3,12 @@ import Blog from './components/Blog'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import CreateBlogForm from './components/CreateBlogForm'
+import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import LoginForm from './components/LoginForm'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -58,24 +56,13 @@ const App = () => {
     }
   }
 
-  const addBlog = event => {
-    event.preventDefault()
-
-    const newBlog = {
-      title: title,
-      author: author,
-      url: url,
-    }
-
+  const addBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
     blogService
-      .create(newBlog)
+      .create(blogObject)
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
-        setTitle('')
-        setAuthor('')
-        setUrl('')
-        setNotificationMessage(`New blog added: ${title} by ${author}`)
+        setNotificationMessage(`New blog added: ${blogObject.title} by ${blogObject.author}`)
         setNotificationType('success')
         setTimeout(() => {
           setNotificationMessage(null)
@@ -109,31 +96,14 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <h2>Log in to application</h2>
         <Notification message={notificationMessage} type={notificationType} />
-        <form onSubmit={handdleLogin}>
-          <div>
-            username
-            <input
-              type='text'
-              value={username}
-              name='Usename'
-              autoComplete='current-username'
-              onChange={({ target }) => setUsername(target.value)}
-            />
-          </div>
-          <div>
-            password
-            <input
-              type='password'
-              value={password}
-              name='Password'
-              autoComplete='current-password'
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </div>
-          <button type='submit'>Login</button>
-        </form>
+        <LoginForm
+          onSubmit={handdleLogin}
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+        />
       </div>
     )
   }
@@ -146,14 +116,8 @@ const App = () => {
       <button onClick={handleLogout}>Logout</button>
 
       <Togglable buttonLabel={'Create'} ref={blogFormRef}>
-        <CreateBlogForm
-          title={title}
-          setTitle={setTitle}
-          author={author}
-          setAuthor={setAuthor}
-          url={url}
-          setUrl={setUrl}
-          handleSubmit={addBlog}
+        <BlogForm
+          createBlog={addBlog}
         />
       </Togglable>
 
