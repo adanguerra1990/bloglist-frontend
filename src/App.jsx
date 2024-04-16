@@ -13,7 +13,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState(null)
-  const [notificationType, setNotificationType] = useState(null)
+  const [notificationType, setNotificationType] = useState(null) 
 
   const blogFormRef = useRef()
 
@@ -93,6 +93,11 @@ const App = () => {
     }, 5000)
   }
 
+  const updateBlog = (likes) => {
+    setBlogs(blogs.map(blog => blog.id === likes.id ? likes : blog));
+ }
+  
+
   if (user === null) {
     return (
       <div>
@@ -124,7 +129,7 @@ const App = () => {
 
       <div>
         {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} updateLikes={updateBlog}/>
         )}
       </div>
     </div>
