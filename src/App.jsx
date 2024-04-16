@@ -61,6 +61,7 @@ const App = () => {
     blogService
       .create(blogObject)
       .then(returnedBlog => {
+        blogService.getUser(returnedBlog.user)
         setBlogs(blogs.concat(returnedBlog))
         setNotificationMessage(`New blog added: ${blogObject.title} by ${blogObject.author}`)
         setNotificationType('success')
@@ -77,7 +78,6 @@ const App = () => {
           setNotificationType(null)
         }, 5000);
       })
-
   }
 
   const handleLogout = () => {
