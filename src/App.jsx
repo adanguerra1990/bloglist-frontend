@@ -30,7 +30,7 @@ const App = () => {
       setUser(user)
       blogService.setToken(user.token)
     }
-  }, []);
+  }, [])  
 
   const handdleLogin = async (event) => {
     event.preventDefault()
@@ -61,7 +61,6 @@ const App = () => {
     blogService
       .create(blogObject)
       .then(returnedBlog => {
-        console.log('returnedBlog', returnedBlog.user.id)
         blogService.getUser(returnedBlog.user.id)
         setBlogs(blogs.concat(returnedBlog))
         setNotificationMessage(`New blog added: ${blogObject.title} by ${blogObject.author}`)
@@ -95,9 +94,10 @@ const App = () => {
   }
 
   const updateBlog = (likes) => {
-    setBlogs(blogs.map(blog => blog.id === likes.id ? likes : blog));
- }
-  
+    setBlogs(blogs.map(blog => blog.id === likes.id ? likes : blog))
+  }
+
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)  
 
   if (user === null) {
     return (
@@ -129,7 +129,7 @@ const App = () => {
 
 
       <div>
-        {blogs.map(blog =>
+        {sortedBlogs.map(blog =>
           <Blog key={blog.id} blog={blog} updateLikes={updateBlog}/>
         )}
       </div>
