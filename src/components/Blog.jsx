@@ -3,9 +3,7 @@ import blogService from '../services/blogs'
 
 const Blog = ({ blog, updateLikes }) => {
   const [showDetails, setShowDetails] = useState(false)
-
-  console.log('blog', blog)
-
+  
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
