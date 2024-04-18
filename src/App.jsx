@@ -13,7 +13,7 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notificationMessage, setNotificationMessage] = useState(null)
-  const [notificationType, setNotificationType] = useState(null) 
+  const [notificationType, setNotificationType] = useState(null)
 
   const blogFormRef = useRef()
 
@@ -24,13 +24,13 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser', JSON.stringify(user))
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
     }
-  }, [])  
+  }, [])
 
   const handdleLogin = async (event) => {
     event.preventDefault()
@@ -93,11 +93,15 @@ const App = () => {
     }, 5000)
   }
 
+  const handdleDeleteBlog = async (id) => {       
+        setBlogs(blogs.filter(blog => blog.id !== id))     
+  }
+
   const updateBlog = (likes) => {
     setBlogs(blogs.map(blog => blog.id === likes.id ? likes : blog))
   }
 
-  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)  
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
 
   if (user === null) {
     return (
@@ -130,7 +134,13 @@ const App = () => {
 
       <div>
         {sortedBlogs.map(blog =>
-          <Blog key={blog.id} blog={blog} updateLikes={updateBlog}/>
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateLikes={updateBlog}
+            onDelete={() => handdleDeleteBlog(blog.id)}
+            currentUserId={user ? user.id : null}
+          />
         )}
       </div>
     </div>

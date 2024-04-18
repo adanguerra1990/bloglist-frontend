@@ -1,9 +1,9 @@
 import { useState } from "react"
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, updateLikes }) => {
+const Blog = ({ blog, updateLikes, onDelete, currentUserId }) => {
   const [showDetails, setShowDetails] = useState(false)
-  
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -22,6 +22,19 @@ const Blog = ({ blog, updateLikes }) => {
       updateLikes(updateBlog)
     } catch (error) {
       console.error('Error updating likes:', error)
+    }
+  }
+
+  const handdleDeleteBlog = async () => {
+    const confirmation = window.confirm(`Remove blog ${blog.title} by ${blog.author}`)
+
+    if (confirmation) {
+      try {
+        await blogService.deleteBlog(blog.id);
+        onDelete()
+      } catch (error) {
+        console.error('Error deleting blog:', error);
+      }
     }
   }
 
@@ -44,6 +57,10 @@ const Blog = ({ blog, updateLikes }) => {
             <button onClick={handleLike}>like</button>
             <br />
             Added by: {blog.user.name}
+            <br />
+            {currentUserId && blog.user.id === currentUserId && (
+              <button onClick={handdleDeleteBlog}>Remove</button>
+            )}
           </div>
         </div>
       )}
