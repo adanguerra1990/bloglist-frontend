@@ -60,8 +60,7 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject)
-      .then(returnedBlog => {
-        blogService.getUser(returnedBlog.user.id)
+      .then(returnedBlog => {        
         setBlogs(blogs.concat(returnedBlog))
         setNotificationMessage(`New blog added: ${blogObject.title} by ${blogObject.author}`)
         setNotificationType('success')
