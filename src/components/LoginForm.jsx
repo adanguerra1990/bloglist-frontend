@@ -1,4 +1,5 @@
-import React from 'react';
+import React from 'react'
+import PropType from 'prop-types'
 
 const LoginForm = ({onSubmit, handleUsernameChange, handlePasswordChange, username, password}) => {
     return (
@@ -29,6 +30,14 @@ const LoginForm = ({onSubmit, handleUsernameChange, handlePasswordChange, userna
             </form>
         </div>
     );
+}
+
+LoginForm.PropType = {
+    onSubmit: PropType.func.isRequired,
+    handleUsernameChange: PropType.func.isRequired,
+    handlePasswordChange: PropType.func.isRequired,
+    username: PropType.string.isRequired,
+    password: PropType.string.isRequired,
 }
 
 export default LoginForm;
