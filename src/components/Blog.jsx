@@ -39,25 +39,21 @@ const Blog = ({ blog, updateLikes, onDelete, currentUserId }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="container-blog">
       <div>
-        {blog.title}
+        <p>{blog.title}</p>
+        <p>{blog.author}</p>
         <button onClick={toggleDetails}>
           {showDetails ? 'hide' : 'view'}
         </button>
       </div>
       {showDetails && (
         <div>
-          <div>
-            {blog.author}
-            <br />
-            {blog.url}
-            <br />
-            likes: {blog.likes}
-            <button onClick={handleLike}>like</button>
-            <br />
-            Added by: {blog.user.name}
-            <br />
+          <div>            
+            <p>{blog.url}</p>            
+            <p>likes: {blog.likes}</p>
+            <button onClick={handleLike}>like</button>            
+            <p>Added by: {blog.user.name}</p>            
             {currentUserId && blog.user.id === currentUserId && (
               <button onClick={handdleDeleteBlog}>Remove</button>
             )}
