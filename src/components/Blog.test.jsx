@@ -17,14 +17,7 @@ describe('<Blog />', () => {
 
     // Mock de funciones
     const updateLikes = vi.fn()
-    const onDelete = vi.fn()
-    const handleLike = vi.fn()
-
-    // Mock del servicio de blogs
-    vi.mock('../services/blogs', () => ({
-        updateLikes: vi.fn(),
-        onDelete: vi.fn()
-    }))
+    const onDelete = vi.fn()     
 
     test('Muestra el titulo y el author del blog, pero no la url y los likes de forma predeterminada', () => {
 
@@ -103,6 +96,5 @@ describe('<Blog />', () => {
         })
 
         expect(detailsButton).toHaveTextContent('view')
-    });
-
-});
+    })
+})
