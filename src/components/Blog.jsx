@@ -1,7 +1,6 @@
 import { useState } from "react"
-import blogService from '../services/blogs'
 
-const Blog = ({ blog, updateLikes, onDelete, currentUserId }) => {
+const Blog = ({ blog, onDelete, currentUserId, updateLikes }) => {
   const [showDetails, setShowDetails] = useState(false)
 
   const blogStyle = {
@@ -14,15 +13,6 @@ const Blog = ({ blog, updateLikes, onDelete, currentUserId }) => {
 
   const toggleDetails = () => {
     setShowDetails(!showDetails)
-  }
-
-  const handleLike = async () => {
-    try {
-      const updateBlog = await blogService.updateLikes(blog.id)
-      updateLikes(updateBlog)
-    } catch (error) {
-      console.error('Error updating likes:', error)
-    }
   }
 
   const handdleDeleteBlog = async () => {
@@ -40,27 +30,24 @@ const Blog = ({ blog, updateLikes, onDelete, currentUserId }) => {
 
   return (
     <div style={blogStyle} className="container-blog">
-      <div>
-        <p>{blog.title}</p>
-        <p>{blog.author}</p>
-        <button onClick={toggleDetails}>
-          {showDetails ? 'hide' : 'view'}
-        </button>
-      </div>
+      <p>{blog.title}</p>
+      <p>{blog.author}</p>
+      <button onClick={toggleDetails}>
+        {showDetails ? 'hide' : 'view'}
+      </button>
       {showDetails && (
         <div>
-          <div>            
-            <p>{blog.url}</p>            
+          <div>
+            <p>{blog.url}</p>
             <p>likes: {blog.likes}</p>
-            <button onClick={handleLike}>like</button>            
-            <p>Added by: {blog.user.name}</p>            
+            <button onClick={updateLikes}>like</button>
+            <p>Added by: {blog.user.name}</p>
             {currentUserId && blog.user.id === currentUserId && (
               <button onClick={handdleDeleteBlog}>Remove</button>
             )}
           </div>
         </div>
       )}
-
     </div>
   )
 }

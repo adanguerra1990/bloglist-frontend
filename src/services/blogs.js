@@ -21,6 +21,14 @@ const getUser = async (userId) => {
   return response.data
 }
 
+const getBlogById = async (id) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const response = await axios.get(`${baseUrl}/${id}`, config)
+  return response.data
+}
+
 const create = async newObject => {
   const config = {
     headers: { Authorization: token }
@@ -44,9 +52,8 @@ const deleteBlog = async id => {
   return response.data
 }
 
-const updateLikes = async (id) => {
-  const response = await axios.put(`${baseUrl}/${id}`)
-  const blog = response.data
+const updateLikes = async (id) => {  
+  const blog = await getBlogById(id)
 
   const updateLikes = blog.likes + 1
 
@@ -55,4 +62,4 @@ const updateLikes = async (id) => {
   return updateResponse.data
 }
 
-export default { getAll, getUser, create, updateLikes, deleteBlog, setToken }
+export default { getAll, getUser, create, updateLikes, deleteBlog, setToken, getBlogById }

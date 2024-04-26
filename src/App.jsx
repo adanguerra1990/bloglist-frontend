@@ -19,7 +19,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs(blogs)
+      setBlogs((blogs.sort((a, b) => b.likes - a.likes)))
     )
   }, [])
 
@@ -60,7 +60,7 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     blogService
       .create(blogObject)
-      .then(returnedBlog => {        
+      .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
         setNotificationMessage(`New blog added: ${blogObject.title} by ${blogObject.author}`)
         setNotificationType('success')
@@ -92,15 +92,15 @@ const App = () => {
     }, 5000)
   }
 
-  const handdleDeleteBlog = async (id) => {       
-        setBlogs(blogs.filter(blog => blog.id !== id))     
+  const handdleDeleteBlog = async (id) => {
+    setBlogs(blogs.filter(blog => blog.id !== id))
   }
 
-  const updateBlog = (likes) => {
-    setBlogs(blogs.map(blog => blog.id === likes.id ? likes : blog))
-  }
-
-  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+  
+  const updateLikes = async (blogId) => {    
+    const updatedBlog = await blogService.updateLikes(blogId)    
+    setBlogs(blogs.map(blog => blog.id === blogId ? updatedBlog : blog).sort((a, b) => b.likes - a.likes))
+ }
 
   if (user === null) {
     return (
@@ -129,14 +129,13 @@ const App = () => {
           createBlog={addBlog}
         />
       </Togglable>
-
-
+      
       <div>
-        {sortedBlogs.map(blog =>
+        {blogs.map(blog =>
           <Blog
             key={blog.id}
             blog={blog}
-            updateLikes={updateBlog}
+            updateLikes={() => updateLikes(blog.id)}
             onDelete={() => handdleDeleteBlog(blog.id)}
             currentUserId={user ? user.id : null}
           />
